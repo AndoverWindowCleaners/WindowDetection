@@ -6,8 +6,6 @@ for name in os.listdir('training_videos'):
 
     EVERY_OTHER = 10
 
-    # name = '20210710-195752.avi'
-
     file_name = 'training_videos/' + name
 
     new_folder = 'images/' + name
@@ -36,4 +34,3 @@ for name in os.listdir('training_videos'):
 
 
     cap.release()
-# cv2.destroyAllWindows()
