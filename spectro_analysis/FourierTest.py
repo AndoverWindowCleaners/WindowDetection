@@ -1,22 +1,21 @@
 import numpy as np
 import cv2
+import os
 import matplotlib.pyplot as plt
 
-base_dir = './Detection/training_videos/'
-#,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
-video_paths = [
-    '20210710-195636.avi',
-    '20210710-194933.avi',
-    '20210710-195636.avi',
-    '20210710-200436.avi',
-    '20210710-195957.avi',
-    '20210710-194508.avi',
-    '20210710-202536.avi'
-]
+FPS = 5
+
+base_dir = 'WindowDetection/training_videos/'
+
+video_paths = []
+for file in os.listdir(base_dir):
+    if file[:8] == "20210713" or file[:8] == "20210710":
+        video_paths.append(file)
+
 video_paths = [base_dir+video_path for video_path in video_paths]
 captures = [cv2.VideoCapture(video_path) for video_path in video_paths]
 lengths = [int(capture.get(7)) for capture in captures]
-fpss = [capture.get(5) for capture in captures]
+fpss = [capture.get(FPS) for capture in captures]
 durations = [length/fps for length,fps in zip(lengths,fpss)]
 print(lengths)
 all_frames = [np.zeros((length,1,1),dtype=np.float16) for length in lengths]
