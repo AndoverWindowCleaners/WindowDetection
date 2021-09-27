@@ -3,7 +3,9 @@ from torch import nn
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
-
+class PolarizeBackbone(nn.Module):
+	def __init__(self, backbone):
+		
 
 class InputInjection(nn.Module):
 	def __init__(self, pretrained=False):
