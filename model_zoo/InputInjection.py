@@ -5,9 +5,9 @@ from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
 
 
-class BackboneInjection(nn.Module):
+class InputInjection(nn.Module):
 	def __init__(self, pretrained=False):
-		super(BackboneInjection, self).__init__()
+		super(InputInjection, self).__init__()
 		self.fasterRCNN = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=pretrained, pretrained_backbone=True)
 		in_features = self.fasterRCNN.roi_heads.box_predictor.cls_score.in_features
 		self.fasterRCNN.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
@@ -17,13 +17,13 @@ class BackboneInjection(nn.Module):
 		    param.requires_grad = False
 		print(self.fasterRCNN.backbone.body)
 
-	def save(self, file_name="BackboneInjection.weights"):
+	def save(self, file_name="InputInjection.weights"):
 		torch.save(self.fasterRCNN.state_dict(), file_name)
 
 	def __call__(self,imgs,labels=None):
 		return self.fasterRCNN.backbone.body(imgs)
 
-model = BackboneInjection()
+model = InputInjection()
 x = torch.zeros((1,3,265,265))
 y = model(x)
 print(y.keys())
