@@ -3,6 +3,8 @@ from torch import nn
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
+import cv2
+import torch.nn.functional as F
 
 class PolarizeBackbone(nn.Module):
 	def __init__(self, backbone):
@@ -13,6 +15,9 @@ class PolarizeBackbone(nn.Module):
 		self.backbone.body.conv1 = newConv1
 
 	def __call__(self, x):
+		'''
+		x is expected to be (batch, channel, h, w)
+		'''
 		return self.backbone(x)		
 
 class InputInjection(nn.Module):
@@ -33,14 +38,22 @@ class InputInjection(nn.Module):
 	def save(self, file_name="InputInjection.weights"):
 		torch.save(self.fasterRCNN.state_dict(), file_name)
 
-	def __call__(self,imgs,labels=None):
-		return self.fasterRCNN(imgs)
+	def __call__(self,imgs,polars,labels=None):
+		'''
+		both imgs and polars ought to be tensors with
+		(batch, depth, height, width)
+		'''
+		polars = F.interpolate(polars,(imgs.shape[-2], imgs.shape[-1])) # try different interpolations
+		print(imgs.shape, polars.shape)
+		x = torch.cat([imgs, polars], dim=1)
+		return self.fasterRCNN(x)
 
 model = InputInjection()
 model.eval()
-print(model)
-x = torch.zeros((1,4,265,265))
-y = model(x)
+#print(model)
+x = torch.zeros((1,3,265,265))
+p = torch.zeros((1,1,265,265))
+y = model(x,p)
 print(y[0])
 
 # given the pretrained nature of the model, I suspect zero initialization will be the best
