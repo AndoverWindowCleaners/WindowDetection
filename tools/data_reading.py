@@ -4,14 +4,18 @@ import cv2
 import torch
 from torch.utils.data import Dataset
 from torchvision.datasets.coco import CocoDetection
+import pickle
 
 class WindowDataset(CocoDetection):
-    def __init__(self, labels_folder = 'data/labels/', images_folder = 'data/images/'):
+    def __init__(self, data_path = None, labels_folder = None, images_folder = None):
         super(Dataset, self).__init__()
+        if data_path is not None:
+            with open(data_path,'rb') as f:
+                self.data = pickle.load(f)
+            return
         self.data = []
         image_width = 128
         image_height = 96
-
         for folder in os.listdir(labels_folder):
             if folder != '.DS_Store':
                 for filename in os.listdir(f"{labels_folder}{folder}"):
