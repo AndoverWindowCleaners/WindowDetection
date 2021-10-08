@@ -8,23 +8,11 @@ from scipy import signal
 def inv_CRF(x):
     return x**0.8
 
-base_dir = './Detection/training_videos/'
+base_dir = 'data/training_videos/'
 #,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
 video_paths = [
-    '20210710-195120.avi',
-    '20210710-194833.avi',
-    '20210710-195636.avi',
-    '20210710-194933.avi',
-    '20210710-195530.avi',
-    '20210710-200436.avi',
-    '20210710-195957.avi',
-    '20210710-194508.avi',
-    '20210710-202536.avi',
-    '20210713-214632.avi',
-    '20210713-220727.avi',
-    '20210713-220929.avi',
-    '20210713-221057.avi',
-    '20210713-221318.avi'
+    '1 W.mov',
+    '5 NW.avi'
 ]
 video_paths = [base_dir+video_path for video_path in video_paths]
 captures = [cv2.VideoCapture(video_path) for video_path in video_paths]
@@ -58,7 +46,7 @@ for all_frame in all_frames:
     all_freqs.append(freqs)
     all_spectrs.append(spectr)
 
-fig, axes = plt.subplots(2,7)
+fig, axes = plt.subplots(2,1)
 for i,all_frame,ax in zip(range(len(all_frames)),all_frames,axes.flatten()):
     freqs,times,spectr = all_freqs[i],all_times[i],all_spectrs[i]
     print(freqs.shape, spectr.shape)
