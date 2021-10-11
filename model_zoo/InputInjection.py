@@ -3,7 +3,7 @@ from torch import nn
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
-import cv2
+from model_zoo.PolarizePreprocess import PolarizePreprocess
 import torch.nn.functional as F
 
 class PolarizeBackbone(nn.Module):
@@ -23,6 +23,7 @@ class PolarizeBackbone(nn.Module):
 class InputInjection(nn.Module):
 	def __init__(self, pretrained=False):
 		super(InputInjection, self).__init__()
+		self.polarPrep = PolarizeBackbone()
 		self.fasterRCNN = torchvision.models.detection.fasterrcnn_resnet50_fpn(\
 			pretrained=pretrained, pretrained_backbone=True, \
 			image_mean=[0.485, 0.456, 0.406, 0], image_std=[0.229, 0.224, 0.225, 1], \
@@ -43,7 +44,7 @@ class InputInjection(nn.Module):
 		both imgs and polars ought to be tensors with
 		(batch, depth, height, width)
 		'''
-		polars = F.interpolate(polars,(imgs.shape[-2], imgs.shape[-1])) # try different interpolations
+		polars = self.polarPrep(polars)
 		print(imgs.shape, polars.shape)
 		x = torch.cat([imgs, polars], dim=1)
 		return self.fasterRCNN(x)
