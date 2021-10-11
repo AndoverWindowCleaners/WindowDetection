@@ -29,8 +29,3 @@ class PolarizePreprocess(nn.Module):
         x = self.tanh(self.conv3(x)) # try with tanh and relu and sigmoid
         return x	
 
-model = PolarizePreprocess()
-model.eval()
-x = torch.zeros((1, 24, 9, 12))
-y = model(x)
-print(y.shape)
