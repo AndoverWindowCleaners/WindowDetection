@@ -6,6 +6,7 @@ from torch.utils.data import Dataset
 from torchvision.datasets.coco import CocoDetection
 import pickle
 from scipy import signal
+import pickle
 from bisect import bisect_left
 
 class WindowDataset(CocoDetection):
@@ -100,12 +101,28 @@ class WindowDataset(CocoDetection):
                 pickle.dump(spectrs, f)
 
 class CompressedWindowDataset(CocoDetection):
-    def __init__(self, video_folder = 'data/training_videos/', labels_folder = 'data/labels/', images_folder = 'data/images/', spectr_folder = None):
+    def __init__(self, video_data = 'data/images.data', labels_data = 'data/labs.data', spectr_data = 'data/spectro.data'):
         super(Dataset, self).__init__()
-        self.video_folder = video_folder
-        self.labels_folder = labels_folder
-        self.images_folder = images_folder
-        self.spectr_folder = spectr_folder
-        self.videos = [vid for vid in os.listdir(video_folder) if 'W' in vid or 'NW' in vid]
+        with open(video_data, 'rb') as f:
+            self.video_data = pickle.load(f)
+        with open(labels_data, 'rb') as f:
+            self.labels_data = pickle.load(f)
+        with open(spectr_data, 'rb') as f:
+            self.spectr_data = pickle.load(f)
+        all_keys = list(set(self.spectr_data.keys()).intersection(set(self.labels_data.keys())).intersection(set(self.video_data.keys())))
+        self.seq_spectr = torch.cat([self.spectr_data[k] for k in all_keys])
+        self.seq_video = torch.cat([self.video_data[k] for k in all_keys])
+        temp = [self.labels_data[k][1:-1] for k in all_keys]
+        self.seq_labels = []
+        [self.seq_labels.extend(ll) for ll in temp]
+        print(self.seq_spectr.shape)
+        print(self.seq_video.shape)
+        print(len(self.seq_labels))
         self.image_width = 128
         self.image_height = 96
+    
+    def __getitem__(self, index):
+        return self.seq_video[index], self.seq_spectr[index], self.seq_labels[index]
+    
+    def __len__(self):
+        return len(self.seq_spectr)
