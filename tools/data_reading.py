@@ -48,28 +48,26 @@ class WindowDataset(CocoDetection):
         folder = 'Folder '+name
         all_spectr = []
         if os.path.exists(f"{self.labels_folder}{folder}") and os.path.exists(f"{self.images_folder}{folder}"):
-            for filename in os.listdir(f"{self.labels_folder}{folder}"):
-                if filename.endswith("YOLO"):
-                    _file_names = os.listdir(f"{self.labels_folder}{folder}/{filename}")
-                    _file_names.sort()
-                    for i, _file in enumerate(_file_names):
-                        if i == 0 or i == len(_file_names)-1:
-                            continue
-                        front_part = i*10/total_frame*dure
-                        pos = bisect_left(times,front_part,0,len(times))
-                        left = 0
-                        if pos > 0:
-                            left = times[pos-1]
-                        right = times[-1]
-                        if pos < len(times):
-                            right = times[pos]
-                        else:
-                            print(times[-1], front_part)
-                        assert(left<=front_part and front_part<=right)
-                        leftW = (right-front_part)/(right-left) # this should weight left
-                        rightW = (front_part-left)/(right-left) # this should weight right
-                        cur_spectr = spectr[:,:,:,:,pos-1]*leftW + spectr[:,:,:,:,pos]*rightW
-                        all_spectr.append(torch.tensor(cur_spectr))
+            _file_names = os.listdir(f"{self.images_folder}{folder}")
+            _file_names.sort()
+            for i, _file in enumerate(_file_names):
+                if i == 0 or i == len(_file_names)-1:
+                    continue
+                front_part = i*10/total_frame*dure
+                pos = bisect_left(times,front_part,0,len(times))
+                left = 0
+                if pos > 0:
+                    left = times[pos-1]
+                right = times[-1]
+                if pos < len(times):
+                    right = times[pos]
+                else:
+                    print(times[-1], front_part)
+                assert(left<=front_part and front_part<=right)
+                leftW = (right-front_part)/(right-left) # this should weight left
+                rightW = (front_part-left)/(right-left) # this should weight right
+                cur_spectr = spectr[:,:,:,:,pos-1]*leftW + spectr[:,:,:,:,pos]*rightW
+                all_spectr.append(torch.tensor(cur_spectr))
         if len(all_spectr) == 0:
             return None
         all_spectr = torch.stack(all_spectr,dim=0)
