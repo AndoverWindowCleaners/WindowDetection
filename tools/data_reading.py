@@ -41,6 +41,7 @@ class WindowDataset(CocoDetection):
         video_name = self.videos[idx]
         name = video_name.split('.')[0]
         freqs, times, spectr, total_frame, fps = WindowDataset.read_video(f'{self.video_folder}{video_name}')
+        print(spectr.shape)
         # spectr (F, H, W, C, T)
         dure = total_frame/fps
         folder = 'Folder '+name
@@ -69,10 +70,10 @@ class WindowDataset(CocoDetection):
                         cur_spectr = spectr[:,:,:,:,pos-1]*leftW + spectr[:,:,:,:,pos]*rightW
                         all_spectr.append(torch.tensor(cur_spectr))
         if len(all_spectr) == 0:
-            return None, None, None
+            return None
         all_spectr = torch.stack(all_spectr,dim=0)
-        # spectr (N, F, H, W, C)
-        all_spectr = torch.flatten(all_spectr.permute(0,2,3,4,1), start_dim=3)
+        # spectr (N, F, C, H, W)
+        all_spectr = torch.flatten(all_spectr.permute(0,3,4,1,2), start_dim=3)
         # spectr (N, H, W, C*F)
         return all_spectr
 
@@ -89,10 +90,12 @@ class WindowDataset(CocoDetection):
             video_name = self.videos[idx]
             name = video_name.split('.')[0]
             if os.path.exists(f'{spectr_folder}/{name}.spectr'):
+                pass
+                #continue
+            spectrs = self.gen_spectro(idx)
+            if spectrs is None:
                 continue
-            imgs, spectrs, labs = self.gen_spectro(idx)
-            if imgs is None or spectrs is None or labs is None:
-                continue
+            print(spectrs.shape)
             with open(f'{spectr_folder}/{name}.spectr', 'wb') as f:
                 pickle.dump(spectrs, f)
 
