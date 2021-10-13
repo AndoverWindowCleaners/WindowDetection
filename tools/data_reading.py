@@ -8,6 +8,7 @@ import pickle
 from scipy import signal
 import pickle
 from bisect import bisect_left
+from torchvision.transforms import ToTensor
 
 class WindowDataset(CocoDetection):
     def read_video(file_name):
@@ -138,3 +139,35 @@ class CompressedWindowDataset(CocoDetection):
     
     def __len__(self):
         return len(self.seq_spectr)
+
+class CocoWindowDataset(CocoDetection):
+    def __init__(self, images_folder = 'data/images/', labels_path = 'data/anno', spectr_file = 'data/new_spectro.data'):
+        super().__init__(images_folder, labels_path)
+        with open(spectr_file, 'rb') as f:
+            self.spectr_data = pickle.load(f)
+        
+    def __getitem__(self, idx):
+        img,labs = super().__getitem__(idx)
+        T = ToTensor()
+        img = T(img)
+        if len(labs) == 0:
+            return None, None, None
+        id = labs[0]['image_id']
+        nTargets = {'boxes':[], 'labels':[], 'image_id':torch.tensor(id,dtype=torch.int64), 'area':torch.tensor(labs[0]['image_id'],dtype=torch.int64)}
+        for lab in labs:
+            box = lab['bbox'].copy()
+            box[2] += box[0]
+            box[3] += box[1]
+            if box[2]-box[0] < 1:
+                continue
+            if box[3]-box[1] < 1:
+                continue
+            nTargets['boxes'].append(box)
+            nTargets['labels'].append(lab['category_id'])
+        nTargets['boxes'] = torch.tensor(nTargets['boxes']).float()
+        nTargets['labels'] = torch.tensor(nTargets['labels'],dtype=torch.int64)
+        return img.double(), self.spectr_data[id], nTargets
+
+    
+    def __len__(self):
+        return super().__len__()
