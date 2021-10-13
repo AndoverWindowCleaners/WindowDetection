@@ -111,14 +111,14 @@ class InputInjection(nn.Module):
 		'''
 		polars = self.polarPrep(polars)
 		print(polars.shape, imgs.shape)
-		return self.fasterRCNN(imgs, polars)
+		return self.fasterRCNN(imgs, polars, labels)
 
-model = InputInjection()
-model.eval()
-#print(model)
-x = torch.zeros((1,3,96,128))
-p = torch.zeros((1,24,9,12))
-y = model(x,p)
-print(y[0])
+# model = InputInjection()
+# model.eval()
+# #print(model)
+# x = torch.ones((1,3,96,128))
+# p = torch.ones((1,24,9,12))
+# y = model(x,p)
+# print(y[0])
 
 # given the pretrained nature of the model, I suspect zero initialization will be the best

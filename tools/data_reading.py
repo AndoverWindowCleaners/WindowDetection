@@ -110,7 +110,7 @@ class CompressedWindowDataset(CocoDetection):
         all_keys = list(set(self.spectr_data.keys()).intersection(set(self.labels_data.keys())).intersection(set(self.video_data.keys())))
         self.seq_spectr = torch.cat([self.spectr_data[k] for k in all_keys])
         self.seq_video = torch.cat([self.video_data[k] for k in all_keys])
-        temp = [self.labels_data[k][1:-1] for k in all_keys]
+        temp = [self.labels_data[k] for k in all_keys]
         self.seq_labels = []
         [self.seq_labels.extend(ll) for ll in temp]
         print(self.seq_spectr.shape)
