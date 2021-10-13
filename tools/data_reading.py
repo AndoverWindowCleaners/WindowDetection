@@ -120,6 +120,8 @@ class CompressedWindowDataset(CocoDetection):
         self.image_height = 96
     
     def __getitem__(self, index):
+        if self.seq_labels[index]['boxes'].shape[0] == 1 and self.seq_labels[index]['boxes'].shape[1] == 0:
+            return None, None, None
         for i,box in enumerate(self.seq_labels[index]['boxes']):
             newbox = torch.tensor([box[0],box[1],box[2]+box[0],box[3]+box[1]])
             self.seq_labels[index]['boxes'][i] = newbox
