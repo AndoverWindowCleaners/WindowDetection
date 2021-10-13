@@ -15,7 +15,6 @@ def train_one_epoch(writer, model, optimizer, data_loader, device, epoch, print_
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'Epoch: [{}]'.format(epoch)
-
     for i, (images, spectrs, targets) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
         if targets == None:
             continue
@@ -86,8 +85,6 @@ def evaluate(writer, model, data_loader, device, print_freq = 100):
         images = torch.unsqueeze(images[0], 0).float().to(device)
         spectrs = torch.unsqueeze(spectrs[0], 0).float().to(device)
 
-        if torch.cuda.is_available():
-            torch.cuda.synchronize()
         model_time = time.time()
         outputs = model(images, spectrs)
 
@@ -100,9 +97,7 @@ def evaluate(writer, model, data_loader, device, print_freq = 100):
         metric_logger.update(model_time=model_time, evaluator_time=evaluator_time)
 
     # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
-    coco_evaluator.synchronize_between_processes()
 
     # accumulate predictions from all images
     coco_evaluator.accumulate()

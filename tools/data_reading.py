@@ -122,9 +122,18 @@ class CompressedWindowDataset(CocoDetection):
     def __getitem__(self, index):
         if self.seq_labels[index]['boxes'].shape[0] == 1 and self.seq_labels[index]['boxes'].shape[1] == 0:
             return None, None, None
+        new_boxes = []
+        new_labs = []
         for i,box in enumerate(self.seq_labels[index]['boxes']):
+            if box[2]<1 or box[3]<1:
+                continue
             newbox = torch.tensor([box[0],box[1],box[2]+box[0],box[3]+box[1]])
-            self.seq_labels[index]['boxes'][i] = newbox
+            new_boxes.append(newbox)
+            new_labs.append(self.seq_labels[index]['labels'][i])
+        if len(new_boxes)==0:
+            return None, None, None
+        self.seq_labels[index]['boxes'] = torch.stack(new_boxes).float()
+        self.seq_labels[index]['labels'] = torch.tensor(new_labs).long()
         return self.seq_video[index], self.seq_spectr[index], self.seq_labels[index]
     
     def __len__(self):
