@@ -110,7 +110,7 @@ class InputInjection(nn.Module):
 		(batch, depth, height, width)
 		'''
 		polars = self.polarPrep(polars)
-		print(polars.shape, imgs.shape)
+		#print(polars.shape, imgs.shape)
 		return self.fasterRCNN(imgs, polars, labels)
 
 # model = InputInjection()
