@@ -109,8 +109,8 @@ class CompressedWindowDataset(CocoDetection):
             self.spectr_data = pickle.load(f)
         all_keys = list(set(self.spectr_data.keys()).intersection(set(self.labels_data.keys())).intersection(set(self.video_data.keys())))
         self.seq_spectr = torch.cat([self.spectr_data[k] for k in all_keys])
-        self.seq_video = torch.cat([self.video_data[k] for k in all_keys])
-        temp = [self.labels_data[k] for k in all_keys]
+        self.seq_video = torch.cat([self.video_data[k][1:-1] for k in all_keys])
+        temp = [self.labels_data[k][1:-1] for k in all_keys]
         self.seq_labels = []
         [self.seq_labels.extend(ll) for ll in temp]
         print(self.seq_spectr.shape)
@@ -120,6 +120,9 @@ class CompressedWindowDataset(CocoDetection):
         self.image_height = 96
     
     def __getitem__(self, index):
+        for i,box in enumerate(self.seq_labels[index]['boxes']):
+            newbox = torch.tensor([box[0],box[1],box[2]+box[0],box[3]+box[1]])
+            self.seq_labels[index]['boxes'][i] = newbox
         return self.seq_video[index], self.seq_spectr[index], self.seq_labels[index]
     
     def __len__(self):
