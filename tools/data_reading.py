@@ -152,7 +152,6 @@ class CocoWindowDataset(CocoDetection):
         img = T(img)
         if len(labs) == 0:
             return None, None, None
-        print(labs)
         id = labs[0]['image_id']
         nTargets = {'boxes':[], 'labels':[], 'image_id':torch.tensor(id,dtype=torch.int64), 'area':torch.tensor(labs[0]['image_id'],dtype=torch.int64)}
         for lab in labs:

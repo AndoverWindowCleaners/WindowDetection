@@ -26,7 +26,7 @@ class PolarizeBackbone(nn.Module):
 		return self.backbone(x)		
 
 class InputInjection(nn.Module):
-	def __init__(self, pretrained=False):
+	def __init__(self, pretrained=True):
 		super(InputInjection, self).__init__()
 		def fasterRCNNforward(self, images, polars, targets=None):
 			if self.training and targets is None:
@@ -102,7 +102,10 @@ class InputInjection(nn.Module):
 		    param.requires_grad = False
 
 	def save(self, file_name="InputInjection.weights"):
-		torch.save(self.fasterRCNN.state_dict(), file_name)
+		torch.save(self.state_dict(), file_name)
+	
+	def load(self, file_name="InputInjection.weights"):
+		self.load_state_dict(torch.load(file_name))
 
 	def forward(self,imgs,polars,labels=None):
 		'''
