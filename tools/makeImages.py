@@ -3,12 +3,11 @@ import os
 
 for name in os.listdir('data/training_videos'):
 
-
     EVERY_OTHER = 10
 
     file_name = 'data/training_videos/' + name
 
-    new_folder = 'data/images/' + name
+    new_folder = 'data/images/Folder ' + name[:-4]
 
     print(new_folder)
 
