@@ -1,14 +1,13 @@
 import cv2
 import os
 
-for name in os.listdir('training_videos'):
-
+for name in os.listdir('data/training_videos'):
 
     EVERY_OTHER = 10
 
-    file_name = 'training_videos/' + name
+    file_name = 'data/training_videos/' + name
 
-    new_folder = 'images/' + name
+    new_folder = 'data/images/Folder ' + name[:-4]
 
     print(new_folder)
 
