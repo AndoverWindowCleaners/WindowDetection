@@ -50,7 +50,6 @@ class InputInjection(nn.Module):
 				original_image_sizes.append((val[0], val[1]))
 
 			images, targets = self.transform(images, targets)
-
 			# Check for degenerate boxes
 			if targets is not None:
 				for target_idx, target in enumerate(targets):
@@ -116,12 +115,12 @@ class InputInjection(nn.Module):
 		#print(polars.shape, imgs.shape)
 		return self.fasterRCNN(imgs, polars, labels)
 
-# model = InputInjection()
-# model.eval()
-# #print(model)
-# x = torch.ones((1,3,96,128))
-# p = torch.ones((1,24,9,12))
-# y = model(x,p)
+model = InputInjection()
+model.eval()
+print(model)
+x = torch.ones((1,3,96,128))
+p = torch.ones((1,24,9,12))
+y = model(x,p)
 # print(y[0])
 
 # given the pretrained nature of the model, I suspect zero initialization will be the best
