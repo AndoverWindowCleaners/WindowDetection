@@ -7,6 +7,7 @@ import torchvision
 import transforms as T
 from pycocotools import mask as coco_mask
 from pycocotools.coco import COCO
+from data_loading.WindowDataset import WindowDetection
 
 
 class FilterAndRemapCocoCategories:
@@ -126,7 +127,7 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
             return True
         return False
 
-    assert isinstance(dataset, torchvision.datasets.CocoDetection)
+    assert isinstance(dataset, WindowDetection)
     ids = []
     for ds_idx, img_id in enumerate(dataset.ids):
         ann_ids = dataset.coco.getAnnIds(imgIds=img_id, iscrowd=None)
@@ -194,16 +195,16 @@ def convert_to_coco_api(ds):
 
 def get_coco_api_from_dataset(dataset):
     for _ in range(10):
-        if isinstance(dataset, torchvision.datasets.CocoDetection):
+        if isinstance(dataset, WindowDetection):
             break
         if isinstance(dataset, torch.utils.data.Subset):
             dataset = dataset.dataset
-    if isinstance(dataset, torchvision.datasets.CocoDetection):
+    if isinstance(dataset, WindowDetection):
         return dataset.coco
     return convert_to_coco_api(dataset)
 
 
-class CocoDetection(torchvision.datasets.CocoDetection):
+class WindowDetectionT(WindowDetection):
     def __init__(self, img_folder, ann_file, transforms):
         super().__init__(img_folder, ann_file)
         self._transforms = transforms
@@ -217,27 +218,21 @@ class CocoDetection(torchvision.datasets.CocoDetection):
         return img, target
 
 
-def get_coco(root, image_set, transforms, mode="instances"):
-    anno_file_template = "{}_{}2017.json"
-    PATHS = {
-        "train": ("train2017", os.path.join("annotations", anno_file_template.format(mode, "train"))),
-        "val": ("val2017", os.path.join("annotations", anno_file_template.format(mode, "val"))),
-        # "train": ("val2017", os.path.join("annotations", anno_file_template.format(mode, "val")))
-    }
-
+def get_coco(root, mode, transforms):
     t = [ConvertCocoPolysToMask()]
 
     if transforms is not None:
         t.append(transforms)
     transforms = T.Compose(t)
 
-    img_folder, ann_file = PATHS[image_set]
+    img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'anno_file.json'
     img_folder = os.path.join(root, img_folder)
+    spectr_folder = os.path.join(root, spectr_folder)
     ann_file = os.path.join(root, ann_file)
 
-    dataset = CocoDetection(img_folder, ann_file, transforms=transforms)
+    dataset = WindowDetectionT(img_folder, spectr_folder, ann_file, transforms=transforms)
 
-    if image_set == "train":
+    if mode == "train":
         dataset = _coco_remove_images_without_annotations(dataset)
 
     # dataset = torch.utils.data.Subset(dataset, [i for i in range(500)])
