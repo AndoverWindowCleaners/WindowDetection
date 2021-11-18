@@ -19,17 +19,16 @@ import torchvision
 import torchvision.models.detection
 import torchvision.models.detection.mask_rcnn
 
-from tools.coco_utils import get_coco, get_coco_kp
-from tools.group_by_aspect_ratio import GroupedBatchSampler, create_aspect_ratio_groups
-from tools.engine import train_one_epoch, coco_evaluate
-
-from tools import utils
-import tools.transforms as T
+from toolkits.coco_utils import get_coco
+from toolkits.engine import train_one_epoch, evaluate
+from model_zoo.InputInjection import InputInjection
+from toolkits import utils
+import toolkits.transforms as T
 
 
 def get_dataset(name, image_set, transform, data_path):
-    p, ds_fn, num_classes = data_path, get_coco, 91
-    ds = ds_fn(p, image_set=image_set, transforms=transform)
+    p, ds_fn, num_classes = data_path, get_coco, 2
+    ds = ds_fn(p, mode=image_set, transforms=transform)
     return ds, num_classes
 
 
@@ -49,8 +48,11 @@ def main():
     # Data loading code
     print("Loading data")
 
-    dataset, num_classes = get_dataset("coco", "largetrain", get_transform(train=True), "coco")
-    dataset_test, _ = get_dataset("coco", "minival", get_transform(train=False), "coco")
+    dataset, num_classes = get_dataset("windowpolar", "train", get_transform(train=True), "data")
+    dataset_test, _ = get_dataset("windowpolar", "val", get_transform(train=False), "data")
+    
+    print(dataset[0])
+    exit()
 
     print("Creating data loaders")
     train_sampler = torch.utils.data.RandomSampler(dataset)
@@ -71,8 +73,7 @@ def main():
         collate_fn=utils.collate_fn)
 
     print("Creating model")
-    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(num_classes=num_classes,
-                                                              pretrained=False)
+    model = InputInjection()
     model.to(device)
 
     model_without_ddp = model
@@ -116,7 +117,7 @@ def main():
             os.path.join('checkpoints', 'model_baseclass_{}.pth'.format(epoch)))
 
         # evaluate after every epoch
-        coco_evaluate(model, data_loader_test, device=device)
+        evaluate(model, data_loader_test, device=device)
 
 
     total_time = time.time() - start_time

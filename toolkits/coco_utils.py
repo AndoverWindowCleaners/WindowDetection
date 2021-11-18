@@ -1,10 +1,12 @@
+import sys
+sys.path.append('../')
 import copy
 import os
 
 import torch
 import torch.utils.data
 import torchvision
-import transforms as T
+import toolkits.transforms as T
 from pycocotools import mask as coco_mask
 from pycocotools.coco import COCO
 from data_loading.WindowDataset import WindowDetection
@@ -205,8 +207,8 @@ def get_coco_api_from_dataset(dataset):
 
 
 class WindowDetectionT(WindowDetection):
-    def __init__(self, img_folder, ann_file, transforms):
-        super().__init__(img_folder, ann_file)
+    def __init__(self, img_folder, spectr_folder, ann_file, transforms):
+        super().__init__(img_folder, spectr_folder, ann_file)
         self._transforms = transforms
 
     def __getitem__(self, idx):
@@ -224,8 +226,10 @@ def get_coco(root, mode, transforms):
     if transforms is not None:
         t.append(transforms)
     transforms = T.Compose(t)
-
-    img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'anno_file.json'
+    if mode == 'train':
+        img_folder, spectr_folder, ann_file = 'images_train', 'spectrograms_train', 'anno_file_train.json'
+    else:
+        img_folder, spectr_folder, ann_file = 'images_val', 'spectrograms_val', 'anno_file_val.json'
     img_folder = os.path.join(root, img_folder)
     spectr_folder = os.path.join(root, spectr_folder)
     ann_file = os.path.join(root, ann_file)

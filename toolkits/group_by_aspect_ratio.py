@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 import bisect
 import copy
 import math
