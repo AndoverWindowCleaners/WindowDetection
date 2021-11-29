@@ -33,10 +33,10 @@ class PolarizePreprocess(nn.Module):
         x = self.tanh(self.conv3(x)) # try with tanh and relu and sigmoid
         return x	
 
-model = PolarizePreprocess()
+# model = PolarizePreprocess()
 
-model.eval()
+# model.eval()
 
-a = torch.zeros((1,24,16,9))
-p = model(a)
-print(p.shape)
+# a = torch.zeros((1,24,16,9))
+# p = model(a)
+# print(p.shape)

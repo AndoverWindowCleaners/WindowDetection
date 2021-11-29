@@ -212,12 +212,12 @@ class WindowDetectionT(WindowDetection):
         self._transforms = transforms
 
     def __getitem__(self, idx):
-        img, target = super().__getitem__(idx)
+        img, spectr, target = super().__getitem__(idx)
         image_id = self.ids[idx]
         target = dict(image_id=image_id, annotations=target)
         if self._transforms is not None:
             img, target = self._transforms(img, target)
-        return img, target
+        return img, spectr, target
 
 
 def get_coco(root, mode, transforms):
