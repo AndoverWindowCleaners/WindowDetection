@@ -43,9 +43,10 @@ for lab_folder in os.listdir(lab_root):
 	labs_files = os.listdir(os.path.join(lab_root, lab_folder))
 	labs_files = [file for file in labs_files if '.txt' in file]
 	labs_files.sort()
-	for i,file in enumerate(labs_files):
-		perc = i/len(labs_files)
-		vidi = round(perc * len(vid))
+	vid_len = len(vid)
+	for file in labs_files:
+		i = int(file.split('.')[0])*10
+		perc = i/vid_len
 		speci = round(perc * len(spectr))
 
 		img_file_path = os.path.join(lab_folder,os.path.splitext(file)[0]+'.jpg')
