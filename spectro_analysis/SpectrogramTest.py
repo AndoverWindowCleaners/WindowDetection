@@ -8,11 +8,11 @@ from scipy import signal
 def inv_CRF(x):
     return x**0.8
 
-base_dir = 'data/training_videos/'
+base_dir = '../data/videos/'
 #,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
 video_paths = [
-    '1 W.mov',
-    '5 NW.avi'
+    'Folder 46 W.mov',
+    'Folder 47 W.mov'
 ]
 video_paths = [base_dir+video_path for video_path in video_paths]
 captures = [cv2.VideoCapture(video_path) for video_path in video_paths]
