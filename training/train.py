@@ -48,6 +48,13 @@ def main():
     dataset, num_classes = get_dataset("windowpolar", "train", get_transform(train=True), os.path.join("..","data"))
     dataset_test, _ = get_dataset("windowpolar", "val", get_transform(train=False), os.path.join("..","data"))
 
+    img, spec, lab = dataset[0]
+    print(img.shape)
+    print(spec.shape)
+    print(lab)
+
+    # exit()
+
     print("Creating data loaders")
     train_sampler = torch.utils.data.RandomSampler(dataset)
     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
@@ -65,6 +72,10 @@ def main():
         dataset_test, batch_size=1,
         sampler=test_sampler, num_workers=8,
         collate_fn=utils.collate_fn)
+
+    images, spectrs, targets = next(iter(data_loader))
+    print(images[0].shape)
+    print(images[1].shape)
 
     print("Creating model")
     model = InputInjection()
@@ -96,7 +107,7 @@ def main():
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join('checkpoints', 'model_baseclass_{}.pth'.format(1)))
+            os.path.join('..','checkpoints', 'model_baseclass_{}.pth'.format(1)))
     epochs = 26
     train_print_freq = 1000
 

@@ -1,5 +1,5 @@
 from typing import List, Tuple, Dict, Optional
-
+import numpy as np
 import torch
 import torchvision
 from torch import nn, Tensor
@@ -21,20 +21,23 @@ class Compose:
     def __init__(self, transforms):
         self.transforms = transforms
 
-    def __call__(self, image, target):
+    def __call__(self, image, spectrogram, target):
         for t in self.transforms:
-            image, target = t(image, target)
-        return image, target
+            image, spectrogram, target = t(image, spectrogram, target)
+        return image, spectrogram, target
 
 
 class RandomHorizontalFlip(T.RandomHorizontalFlip):
     def forward(
-        self, image: Tensor, target: Optional[Dict[str, Tensor]] = None
+        self, image: Tensor, spectrogram: Tensor, target: Optional[Dict[str, Tensor]] = None
     ) -> Tuple[Tensor, Optional[Dict[str, Tensor]]]:
         if torch.rand(1) < self.p:
             image = F.hflip(image)
+            print('sshape')
+            print(spectrogram.shape)
+            spectrogram = torch.flip(spectrogram, [2])
             if target is not None:
-                width, _ = F.get_image_size(image)
+                width = image.shape[-1]
                 target["boxes"][:, [0, 2]] = width - target["boxes"][:, [2, 0]]
                 if "masks" in target:
                     target["masks"] = target["masks"].flip(-1)
@@ -42,16 +45,20 @@ class RandomHorizontalFlip(T.RandomHorizontalFlip):
                     keypoints = target["keypoints"]
                     keypoints = _flip_coco_person_keypoints(keypoints, width)
                     target["keypoints"] = keypoints
-        return image, target
+        return image, spectrogram, target
 
 
 class ToTensor(nn.Module):
     def forward(
-        self, image: Tensor, target: Optional[Dict[str, Tensor]] = None
-    ) -> Tuple[Tensor, Optional[Dict[str, Tensor]]]:
+        self, image: Tensor, spectrogram: np.ndarray, target: Optional[Dict[str, Tensor]] = None
+    ) -> Tuple[Tensor, Tensor, Optional[Dict[str, Tensor]]]:
+        #print(type(image))
+        spectrogram = np.moveaxis(spectrogram, -1, 0)
+        spectrogram = torch.tensor(np.array(spectrogram))
         image = F.pil_to_tensor(image)
+        #print(image.shape)
         image = F.convert_image_dtype(image)
-        return image, target
+        return image, spectrogram, target
 
 
 class PILToTensor(nn.Module):

@@ -75,7 +75,7 @@ for lab_folder in os.listdir(lab_root):
 			boxes.append([box[1]-box[3]/2, box[2]-box[4]/2, box[3], box[4]])
 
 		for box in boxes:
-			anno['annotations'].append({'iscrowd':0, 'image_id':img_id, 'spectrogram_id':spec_id, 'category_id':1, 'id':box_id, 'bbox':box})
+			anno['annotations'].append({'iscrowd':0, 'image_id':img_id, 'spectrogram_id':spec_id, 'category_id':1, 'id':box_id, 'bbox':box, 'area':box[2]*box[3]})
 			box_id+=1
 
 		img_id+=1

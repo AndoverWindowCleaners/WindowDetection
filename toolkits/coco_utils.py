@@ -48,7 +48,7 @@ def convert_coco_poly_to_mask(segmentations, height, width):
 
 
 class ConvertCocoPolysToMask:
-    def __call__(self, image, target):
+    def __call__(self, image, spectrogram, target):
         w, h = image.size
 
         image_id = target["image_id"]
@@ -68,9 +68,6 @@ class ConvertCocoPolysToMask:
         classes = [obj["category_id"] for obj in anno]
         classes = torch.tensor(classes, dtype=torch.int64)
 
-        segmentations = [obj["segmentation"] for obj in anno]
-        masks = convert_coco_poly_to_mask(segmentations, h, w)
-
         keypoints = None
         if anno and "keypoints" in anno[0]:
             keypoints = [obj["keypoints"] for obj in anno]
@@ -82,14 +79,12 @@ class ConvertCocoPolysToMask:
         keep = (boxes[:, 3] > boxes[:, 1]) & (boxes[:, 2] > boxes[:, 0])
         boxes = boxes[keep]
         classes = classes[keep]
-        masks = masks[keep]
         if keypoints is not None:
             keypoints = keypoints[keep]
 
         target = {}
         target["boxes"] = boxes
         target["labels"] = classes
-        target["masks"] = masks
         target["image_id"] = image_id
         if keypoints is not None:
             target["keypoints"] = keypoints
@@ -100,7 +95,7 @@ class ConvertCocoPolysToMask:
         target["area"] = area
         target["iscrowd"] = iscrowd
 
-        return image, target
+        return image, spectrogram, target
 
 
 def _coco_remove_images_without_annotations(dataset, cat_list=None):
@@ -208,12 +203,12 @@ class WindowDetectionT(WindowDetection):
         image_id = self.ids[idx]
         target = dict(image_id=image_id, annotations=target)
         if self._transforms is not None:
-            img, target = self._transforms(img, target)
+            img, spectr, target = self._transforms(img, spectr, target)
         return img, spectr, target
 
 
 def get_coco(root, mode, transforms):
-    t = []
+    t = [ConvertCocoPolysToMask()]
 
     if transforms is not None:
         t.append(transforms)
