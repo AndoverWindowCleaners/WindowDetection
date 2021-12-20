@@ -2,7 +2,7 @@ import torch.utils.data as data
 from PIL import Image
 import os
 import os.path
-import pickle
+import numpy as np
 
 class WindowDetection(data.Dataset):
     """`MS Coco Detection <http://mscoco.org/dataset/#detections-challenge2016>`_ Dataset.
@@ -46,8 +46,7 @@ class WindowDetection(data.Dataset):
         if self.transform is not None:
             img = self.transform(img)
 
-        with open(os.path.join(self.spec_root, path[:path.rfind('.')])) as f:
-            spectr = pickle.load(f)
+        spectr = np.load(os.path.join(self.spec_root, path[:path.rfind('.')] + '.npy'))
 
         if self.spec_transform is not None:
             spectr = self.spec_transform(spectr)

@@ -15,9 +15,6 @@ import time
 import torch
 import torch.utils.data
 from torch import nn
-import torchvision
-import torchvision.models.detection
-import torchvision.models.detection.mask_rcnn
 
 from toolkits.coco_utils import get_coco
 from toolkits.engine import train_one_epoch, evaluate
@@ -48,10 +45,11 @@ def main():
     # Data loading code
     print("Loading data")
 
-    dataset, num_classes = get_dataset("windowpolar", "train", get_transform(train=True), "data")
-    dataset_test, _ = get_dataset("windowpolar", "val", get_transform(train=False), "data")
+    dataset, num_classes = get_dataset("windowpolar", "train", get_transform(train=True), os.path.join("..","data"))
+    dataset_test, _ = get_dataset("windowpolar", "val", get_transform(train=False), os.path.join("..","data"))
     
-    print(dataset[0])
+    print(len(dataset))
+    dataset[0]
     exit()
 
     print("Creating data loaders")

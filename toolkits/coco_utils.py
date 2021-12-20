@@ -110,8 +110,6 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
     def _count_visible_keypoints(anno):
         return sum(sum(1 for v in ann["keypoints"][2::3] if v > 0) for ann in anno)
 
-    min_keypoints_per_image = 10
-
     def _has_valid_annotation(anno):
         # if it's empty, there is no annotation
         if len(anno) == 0:
@@ -119,15 +117,7 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
         # if all boxes have close to zero area, there is no annotation
         if _has_only_empty_bbox(anno):
             return False
-        # keypoints task have a slight different critera for considering
-        # if an annotation is valid
-        if "keypoints" not in anno[0]:
-            return True
-        # for keypoint detection tasks, only consider valid images those
-        # containing at least min_keypoints_per_image
-        if _count_visible_keypoints(anno) >= min_keypoints_per_image:
-            return True
-        return False
+        return True
 
     assert isinstance(dataset, WindowDetection)
     ids = []
@@ -138,6 +128,8 @@ def _coco_remove_images_without_annotations(dataset, cat_list=None):
             anno = [obj for obj in anno if obj["category_id"] in cat_list]
         if _has_valid_annotation(anno):
             ids.append(ds_idx)
+        else:
+            print(f'{anno} has no valid annotation')
 
     dataset = torch.utils.data.Subset(dataset, ids)
     return dataset
@@ -221,15 +213,15 @@ class WindowDetectionT(WindowDetection):
 
 
 def get_coco(root, mode, transforms):
-    t = [ConvertCocoPolysToMask()]
+    t = []
 
     if transforms is not None:
         t.append(transforms)
     transforms = T.Compose(t)
     if mode == 'train':
-        img_folder, spectr_folder, ann_file = 'images_train', 'spectrograms_train', 'anno_file_train.json'
+        img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'annotations/annotations_27.json'
     else:
-        img_folder, spectr_folder, ann_file = 'images_val', 'spectrograms_val', 'anno_file_val.json'
+        img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'annotations/annotations_27.json'
     img_folder = os.path.join(root, img_folder)
     spectr_folder = os.path.join(root, spectr_folder)
     ann_file = os.path.join(root, ann_file)

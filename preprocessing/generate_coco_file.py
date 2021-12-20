@@ -51,8 +51,9 @@ for lab_folder in os.listdir(lab_root):
 
 		img_file_path = os.path.join(lab_folder,os.path.splitext(file)[0]+'.jpg')
 		img = cv2.imread(os.path.join(img_root, img_file_path))
-		anno['images'].append({'file_name':img_file_path, 'height':img.shape[0], 'width':img.shape[1], 'id':img_id})
-		img_id+=1
+		width = img.shape[1]
+		height = img.shape[0]
+		anno['images'].append({'file_name':img_file_path, 'height':height, 'width':width, 'id':img_id})
 		del img
 
 		cur_spectr = spectr[speci]
@@ -67,11 +68,18 @@ for lab_folder in os.listdir(lab_root):
 		boxes = []
 		for box in oboxes:
 			box = [float(i) for i in box.split()]
-			boxes.append([box[1]-box[3]/2, box[2]-box[4]/2, box[1]+box[3]/2, box[2]+box[4]/2])
+			box[1] *= width
+			box[3] *= width
+			box[2] *= height
+			box[4] *= height
+			boxes.append([box[1]-box[3]/2, box[2]-box[4]/2, box[3], box[4]])
 
 		for box in boxes:
 			anno['annotations'].append({'iscrowd':0, 'image_id':img_id, 'spectrogram_id':spec_id, 'category_id':1, 'id':box_id, 'bbox':box})
 			box_id+=1
+
+		img_id+=1
+		spec_id+=1
 
 with open(os.path.join(anno_root, 'annotations_27.json'), 'w') as f:
 	json.dump(anno, f)
