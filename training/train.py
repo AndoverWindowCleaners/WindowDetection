@@ -47,10 +47,6 @@ def main():
 
     dataset, num_classes = get_dataset("windowpolar", "train", get_transform(train=True), os.path.join("..","data"))
     dataset_test, _ = get_dataset("windowpolar", "val", get_transform(train=False), os.path.join("..","data"))
-    
-    print(len(dataset))
-    dataset[0]
-    exit()
 
     print("Creating data loaders")
     train_sampler = torch.utils.data.RandomSampler(dataset)
