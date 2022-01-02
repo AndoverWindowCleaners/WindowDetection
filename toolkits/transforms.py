@@ -33,8 +33,6 @@ class RandomHorizontalFlip(T.RandomHorizontalFlip):
     ) -> Tuple[Tensor, Optional[Dict[str, Tensor]]]:
         if torch.rand(1) < self.p:
             image = F.hflip(image)
-            print('sshape')
-            print(spectrogram.shape)
             spectrogram = torch.flip(spectrogram, [2])
             if target is not None:
                 width = image.shape[-1]

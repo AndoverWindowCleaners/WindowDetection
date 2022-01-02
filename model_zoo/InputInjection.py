@@ -48,8 +48,9 @@ class InputInjection(nn.Module):
 				val = img.shape[-2:]
 				assert len(val) == 2
 				original_image_sizes.append((val[0], val[1]))
-
+			#print(f'orig size: {images.shape}')
 			images, targets = self.transform(images, targets)
+			#print(f'new size: {images.tensors.shape}')
 			# Check for degenerate boxes
 			if targets is not None:
 				for target_idx, target in enumerate(targets):
@@ -65,6 +66,7 @@ class InputInjection(nn.Module):
 						)
 			imgs = images.tensors
 			if polars.shape[2] != imgs.shape[2] or polars.shape[3] != imgs.shape[3]:
+				#print(f'polar size: {polars.shape}, img size: {imgs.shape}')
 				polars = F.interpolate(polars, (imgs.shape[2],imgs.shape[3]), mode='bilinear')
 			inputs = torch.cat([imgs, polars], dim=1) # they are not the same dims
 			features = self.backbone(inputs)
@@ -112,7 +114,7 @@ class InputInjection(nn.Module):
 		(batch, depth, height, width)
 		'''
 		polars = self.polarPrep(polars)
-		print(polars.shape, imgs.shape)
+		#print(polars.shape, imgs.shape)
 		return self.fasterRCNN(imgs, polars, labels)
 
 # model = InputInjection()

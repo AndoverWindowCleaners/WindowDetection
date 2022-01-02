@@ -101,13 +101,13 @@ def main():
     print("Start training")
     start_time = time.time()
 
-    #coco_evaluate(model, data_loader_test, device=device)
+    evaluate(model, data_loader_test, device=device)
     utils.save_on_master({
             'model': model_without_ddp.state_dict(),
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join('..','checkpoints', 'model_baseclass_{}.pth'.format(1)))
+            os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(-1)))
     epochs = 26
     train_print_freq = 1000
 
@@ -119,7 +119,7 @@ def main():
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join('checkpoints', 'model_baseclass_{}.pth'.format(epoch)))
+            os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(epoch)))
 
         # evaluate after every epoch
         evaluate(model, data_loader_test, device=device)

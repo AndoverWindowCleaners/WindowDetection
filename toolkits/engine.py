@@ -89,13 +89,13 @@ def evaluate(model, data_loader, device):
     iou_types = _get_iou_types(model)
     coco_evaluator = CocoEvaluator(coco, iou_types)
 
-    for images, targets in metric_logger.log_every(data_loader, 100, header):
-        images = list(img.to(device) for img in images)
-
+    for images, spectrs, targets in metric_logger.log_every(data_loader, 100, header):
+        images = images[0].to(device)[None,...]
+        spectrs = spectrs[0].to(device)[None,...]
         if torch.cuda.is_available():
             torch.cuda.synchronize()
         model_time = time.time()
-        outputs = model(images)
+        outputs = model(images, spectrs)
 
         outputs = [{k: v.to(cpu_device) for k, v in t.items()} for t in outputs]
         model_time = time.time() - model_time

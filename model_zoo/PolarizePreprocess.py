@@ -25,7 +25,7 @@ class PolarizePreprocess(nn.Module):
         '''
         x is expected to be (batch, channel, h, w)
         '''
-        print(x.shape)
+        #print(x.shape)
         x = self.relu(self.conv1(x))
         x = self.relu(self.upconv1(x))
         x = self.relu(self.upconv2(x))
