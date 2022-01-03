@@ -2,3 +2,4 @@ data/*.data
 **/.DS_Store
 *.weights
 checkpoints/
+save_checkpoints/

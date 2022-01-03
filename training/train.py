@@ -88,7 +88,7 @@ def main():
         params, lr=0.02/8, momentum=0.9, weight_decay=1e-4)
 
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.lr_gamma)
-    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[16, 22], gamma=0.1)
+    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 90], gamma=0.1)
 
     resume = ''
 
@@ -108,7 +108,7 @@ def main():
             'lr_scheduler': lr_scheduler.state_dict(),
             },
             os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(-1)))
-    epochs = 26
+    epochs = 100
     train_print_freq = 1000
 
     for epoch in range(epochs):
