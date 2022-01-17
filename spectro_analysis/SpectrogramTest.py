@@ -9,7 +9,6 @@ def inv_CRF(x):
     return x**0.8
 
 base_dir = '../data/videos/'
-#,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
 video_paths = [
     '46.mov',
     '47.mov',
@@ -41,9 +40,9 @@ all_freqs = []
 all_times = []
 for all_frame in all_frames:
     freqs, times, spectr = signal.spectrogram(all_frame, fs=30.0, window=('hamming'), noverlap=13,  nperseg=14, axis=0, mode='magnitude') 
-    # all_frame has shape (T,12,9,3) (T)--how many frames are in the video
-    # output (N, 12, 9, 3, T') -- applies fourier analysis to each all_shape[start:end,i,j,k] --> (N)
-    # output (N, 12, 9, 3, T')
+    # all_frame has shape (T,9,16,3) (T)--how many frames are in the video
+    # output (N, 9, 16, 3, T') -- applies fourier analysis to each all_shape[start:end,i,j,k] --> (N)
+    # output (N, 9, 16, 3, T')
 
 
     # spectr = spectr[3:]/np.sum(spectr[0:3],axis=0)
