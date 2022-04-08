@@ -213,10 +213,7 @@ def get_coco(root, mode, transforms):
     if transforms is not None:
         t.append(transforms)
     transforms = T.Compose(t)
-    if mode == 'train':
-        img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'annotations/annotations_27.json'
-    else:
-        img_folder, spectr_folder, ann_file = 'images', 'spectrograms', 'annotations/annotations_27.json'
+    img_folder, spectr_folder, ann_file = 'images', 'spectrograms', f'annotations/annotations_27_{mode}.json'
     img_folder = os.path.join(root, img_folder)
     spectr_folder = os.path.join(root, spectr_folder)
     ann_file = os.path.join(root, ann_file)

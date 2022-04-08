@@ -1,0 +1,107 @@
+using device cuda
+Loading data
+loading annotations into memory...
+Done (t=0.01s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+torch.Size([3, 640, 360])
+torch.Size([24, 16, 9])
+{'boxes': tensor([[ 95.1806, 263.2701, 210.8432, 533.1498],
+        [263.7178, 330.4646, 334.2170, 513.3216],
+        [218.5544,  46.2650, 285.7487, 215.9034],
+        [309.9827, 140.9984, 356.2477, 263.2704],
+        [ 59.9312,   0.0000, 180.0002, 135.4906]]), 'labels': tensor([1, 1, 1, 1, 1]), 'image_id': tensor([1]), 'area': tensor([31214.9863, 12891.2617, 11398.7441,  5656.9189, 16268.2158]), 'iscrowd': tensor([0, 0, 0, 0, 0])}
+Creating data loaders
+torch.Size([3, 640, 360])
+torch.Size([3, 640, 360])
+Creating model
+Start training
+Test:  [ 0/91]  eta: 0:00:30  model_time: 0.1734 (0.1734)  evaluator_time: 0.0040 (0.0040)  time: 0.3366  data: 0.1576  max mem: 608
+Test:  [90/91]  eta: 0:00:00  model_time: 0.1660 (0.1692)  evaluator_time: 0.0054 (0.0064)  time: 0.1749  data: 0.0023  max mem: 610
+Test: Total time: 0:00:16 (0.1808 s / it)
+Averaged stats: model_time: 0.1660 (0.1692)  evaluator_time: 0.0054 (0.0064)
+Accumulating evaluation results...
+DONE (t=0.05s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.001
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.007
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.001
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.005
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.003
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.009
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.112
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.091
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.121
+Epoch: [0]  [  0/488]  eta: 0:07:45  lr: 0.000008  loss: 1.2604 (1.2604)  loss_classifier: 1.1379 (1.1379)  loss_box_reg: 0.0767 (0.0767)  loss_objectness: 0.0107 (0.0107)  loss_rpn_box_reg: 0.0350 (0.0350)  time: 0.9534  data: 0.1995  max mem: 1864
+Epoch: [0]  [487/488]  eta: 0:00:00  lr: 0.002500  loss: 0.4304 (0.4215)  loss_classifier: 0.1369 (0.1618)  loss_box_reg: 0.1826 (0.1906)  loss_objectness: 0.0293 (0.0495)  loss_rpn_box_reg: 0.0223 (0.0195)  time: 0.7348  data: 0.0036  max mem: 1920
+Epoch: [0] Total time: 0:06:03 (0.7442 s / it)
+Test:  [ 0/91]  eta: 0:00:32  model_time: 0.1676 (0.1676)  evaluator_time: 0.0245 (0.0245)  time: 0.3587  data: 0.1643  max mem: 1920
+Test:  [90/91]  eta: 0:00:00  model_time: 0.1670 (0.1666)  evaluator_time: 0.0033 (0.0032)  time: 0.1732  data: 0.0023  max mem: 1920
+Test: Total time: 0:00:15 (0.1751 s / it)
+Averaged stats: model_time: 0.1670 (0.1666)  evaluator_time: 0.0033 (0.0032)
+Accumulating evaluation results...
+DONE (t=0.02s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.161
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.365
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.137
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.157
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.178
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.121
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.383
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.469
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.464
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.471
+Epoch: [1]  [  0/488]  eta: 0:07:40  lr: 0.002500  loss: 0.4689 (0.4689)  loss_classifier: 0.1449 (0.1449)  loss_box_reg: 0.2153 (0.2153)  loss_objectness: 0.0055 (0.0055)  loss_rpn_box_reg: 0.1032 (0.1032)  time: 0.9440  data: 0.2097  max mem: 1920
+Epoch: [1]  [487/488]  eta: 0:00:00  lr: 0.002500  loss: 0.2342 (0.2930)  loss_classifier: 0.0796 (0.1009)  loss_box_reg: 0.1167 (0.1531)  loss_objectness: 0.0103 (0.0217)  loss_rpn_box_reg: 0.0084 (0.0174)  time: 0.7345  data: 0.0036  max mem: 1920
+Epoch: [1] Total time: 0:05:58 (0.7352 s / it)
+Test:  [ 0/91]  eta: 0:00:29  model_time: 0.1670 (0.1670)  evaluator_time: 0.0015 (0.0015)  time: 0.3247  data: 0.1542  max mem: 1920
+Test:  [90/91]  eta: 0:00:00  model_time: 0.1656 (0.1662)  evaluator_time: 0.0018 (0.0018)  time: 0.1703  data: 0.0023  max mem: 1920
+Test: Total time: 0:00:15 (0.1731 s / it)
+Averaged stats: model_time: 0.1656 (0.1662)  evaluator_time: 0.0018 (0.0018)
+Accumulating evaluation results...
+DONE (t=0.02s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.177
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.383
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.158
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.298
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.150
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.108
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.387
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.425
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.497
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.393
+Epoch: [2]  [  0/488]  eta: 0:07:30  lr: 0.002500  loss: 0.1960 (0.1960)  loss_classifier: 0.0547 (0.0547)  loss_box_reg: 0.1164 (0.1164)  loss_objectness: 0.0157 (0.0157)  loss_rpn_box_reg: 0.0092 (0.0092)  time: 0.9236  data: 0.1902  max mem: 1920
+Epoch: [2]  [487/488]  eta: 0:00:00  lr: 0.002500  loss: 0.1600 (0.2501)  loss_classifier: 0.0673 (0.0856)  loss_box_reg: 0.0840 (0.1352)  loss_objectness: 0.0064 (0.0154)  loss_rpn_box_reg: 0.0070 (0.0139)  time: 0.7345  data: 0.0036  max mem: 1920
+Epoch: [2] Total time: 0:05:58 (0.7354 s / it)
+Test:  [ 0/91]  eta: 0:00:28  model_time: 0.1649 (0.1649)  evaluator_time: 0.0013 (0.0013)  time: 0.3080  data: 0.1408  max mem: 1920
+Test:  [90/91]  eta: 0:00:00  model_time: 0.1663 (0.1667)  evaluator_time: 0.0016 (0.0016)  time: 0.1707  data: 0.0023  max mem: 1920
+Test: Total time: 0:00:15 (0.1731 s / it)
+Averaged stats: model_time: 0.1663 (0.1667)  evaluator_time: 0.0016 (0.0016)
+Accumulating evaluation results...
+DONE (t=0.02s).
+IoU metric: bbox
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.183
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.430
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.140
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.255
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.169
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.125
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.356
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.406
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.423
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.398

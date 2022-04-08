@@ -65,12 +65,12 @@ def main():
             train_sampler, batch_size, drop_last=True)
 
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_sampler=train_batch_sampler, num_workers=8,
+        dataset, batch_sampler=train_batch_sampler, num_workers=6,
         collate_fn=utils.collate_fn)
 
     data_loader_test = torch.utils.data.DataLoader(
         dataset_test, batch_size=1,
-        sampler=test_sampler, num_workers=8,
+        sampler=test_sampler, num_workers=6,
         collate_fn=utils.collate_fn)
 
     images, spectrs, targets = next(iter(data_loader))

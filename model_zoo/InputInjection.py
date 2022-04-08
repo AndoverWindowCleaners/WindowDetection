@@ -66,7 +66,7 @@ class InputInjection(nn.Module):
 						)
 			imgs = images.tensors
 			if polars.shape[2] != imgs.shape[2] or polars.shape[3] != imgs.shape[3]:
-				#print(f'polar size: {polars.shape}, img size: {imgs.shape}')
+				# print(f'polar size: {polars.shape}, img size: {imgs.shape}')
 				polars = F.interpolate(polars, (imgs.shape[2],imgs.shape[3]), mode='bilinear')
 			inputs = torch.cat([imgs, polars], dim=1) # they are not the same dims
 			features = self.backbone(inputs)
@@ -98,9 +98,11 @@ class InputInjection(nn.Module):
 		self.fasterRCNN.roi_heads.box_predictor = FastRCNNPredictor(in_features, 2)
 		self.fasterRCNN.backbone = PolarizeBackbone(self.fasterRCNN.backbone)
 		for param in self.fasterRCNN.parameters():
-		    param.requires_grad = True
+			param.requires_grad = True
 		for param in self.fasterRCNN.backbone.parameters():
-		    param.requires_grad = False
+			param.requires_grad = False
+		for param in self.fasterRCNN.backbone.backbone.body.conv1.parameters():
+			param.requires_grad = True
 
 	def save(self, file_name="InputInjection.weights"):
 		torch.save(self.state_dict(), file_name)
@@ -114,11 +116,10 @@ class InputInjection(nn.Module):
 		(batch, depth, height, width)
 		'''
 		polars = self.polarPrep(polars)
-		#print(polars.shape, imgs.shape)
+		# print(polars.shape, imgs.shape)
 		return self.fasterRCNN(imgs, polars, labels)
 
-# model = InputInjection()
-# model.eval()
+model = InputInjection()
 # print(model)
 # x = torch.ones((1,3,640,360))
 # p = torch.ones((1,24,16,9))
