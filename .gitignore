@@ -3,3 +3,5 @@ data/*.data
 *.weights
 checkpoints/
 save_checkpoints/
+.idea/
+.ipynb_checkpoints/
