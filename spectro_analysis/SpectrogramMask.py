@@ -64,6 +64,5 @@ fig, ax = plt.subplots(1, 1)
 ax.pcolormesh(list(range(spectr.shape[1])), list(range(spectr.shape[0])), spectr, shading='nearest')
 
 ax.invert_yaxis()
-plt.locator_params(‘y’,nbins = 10)
 
 plt.show()
