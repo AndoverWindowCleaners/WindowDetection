@@ -1,5 +1,3 @@
-from operator import inv
-from matplotlib import mlab
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
