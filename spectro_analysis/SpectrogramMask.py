@@ -57,7 +57,7 @@ spectr = np.mean(spectr, axis=3)
 
 print(freqs)
 
-spectr = spectr[3, :, :, 8]
+spectr = spectr[3, :, :, 9]
 
 fig, ax = plt.subplots(1, 1)
 
