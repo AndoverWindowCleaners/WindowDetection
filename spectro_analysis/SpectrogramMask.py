@@ -1,18 +1,34 @@
-from operator import inv
-from matplotlib import mlab
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
+from matplotlib.widgets import Slider, Button
+
+def inv_CRF(x):
+    return x ** 0.8
+
+base_dir = '../data/videos/'
+# ,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
+video_path = '59.mov'
+video_path = base_dir + video_path
+print(video_path)
+capture = cv2.VideoCapture(video_path)
+
+length = int(capture.get(7))
+frames = []
+for i in range(length):
+    ret, frame = capture.read()
+    frames.append(frame)
+
+print(len(frames))
 
 
 def inv_CRF(x):
     return x ** 0.8
 
-
 base_dir = '../data/videos/'
 # ,'20210710-195636.avi','20210710-200436.avi','20210710-195957.avi','20210710-194508.avi'
-video_path = 'Folder 59 W.mov'
+video_path = '59.mov'
 video_path = base_dir + video_path
 print(video_path)
 capture = cv2.VideoCapture(video_path)
@@ -57,12 +73,13 @@ spectr = np.mean(spectr, axis=3)
 
 print(freqs)
 
-spectr = spectr[3, :, :, 8]
+spectr = spectr[3, :, :, 14]
 
-fig, ax = plt.subplots(1, 1)
+fig, ax = plt.subplots(1, 2)
 
-ax.pcolormesh(list(range(spectr.shape[1])), list(range(spectr.shape[0])), spectr, shading='nearest')
+ax[0].pcolormesh(list(range(spectr.shape[1])), list(range(spectr.shape[0])), spectr, shading='nearest')
 
-ax.invert_yaxis()
+ax[1].imshow(cv2.cvtColor(frames[27], cv2.COLOR_BGR2RGB))
+ax[0].invert_yaxis()
 
 plt.show()
