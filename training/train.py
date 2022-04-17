@@ -85,7 +85,7 @@ def main():
 
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
-        params, lr=0.02/8, momentum=0.9, weight_decay=1e-4)
+        params, lr=0.01/8, momentum=0.9, weight_decay=1e-4)
 
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.lr_gamma)
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 90], gamma=0.1)
@@ -109,7 +109,7 @@ def main():
             },
             os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(-1)))
     epochs = 100
-    train_print_freq = 1000
+    train_print_freq = 10
 
     for epoch in range(epochs):
         train_one_epoch(model, optimizer, data_loader, device, epoch, train_print_freq)

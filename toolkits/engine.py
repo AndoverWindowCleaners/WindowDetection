@@ -26,6 +26,7 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
     for image_batch, spectrs_batch, target_batch in metric_logger.log_every(data_loader, print_freq, header):
         optimizer.zero_grad()
         loss_dict_reduced = 0
+        avg_loss = 0
         for image, spectr, target in zip(image_batch, spectrs_batch, target_batch):
             image = image.to(device)[None,...]
             spectr = spectr.to(device)[None,...]
@@ -40,27 +41,21 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
             losses_reduced = sum(loss for loss in loss_dict_reduced.values())
 
             loss_value = losses_reduced.item()
-
             if not math.isfinite(loss_value):
                 print("Loss is {}".format(loss_value))
                 print(loss_dict_reduced)
                 sys.exit(1)
-
-            #if loss_value > 10*avg_loss or loss_value>10 or not math.isfinite(loss_value):
-            #    print(f'loss is too high dropping, loss: {loss_value}, avg_loss: {avg_loss}')
-            #    continue
-            #else:
-            #    avg_loss = avg_loss*0.9 + loss_value*0.1
-
             losses.backward()
+            avg_loss += loss_value
             #torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
         optimizer.step()
 
-        if lr_scheduler is not None:
-            lr_scheduler.step()
-
+        avg_loss /= image_batch.shape[0]
         metric_logger.update(loss=losses_reduced, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
+        
+        if lr_scheduler is not None:
+            lr_scheduler.step()
 
 
 def _get_iou_types(model):
