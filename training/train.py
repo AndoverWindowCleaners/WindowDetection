@@ -8,7 +8,7 @@ To run in a multi-gpu environment, use the distributed launcher::
 """
 import sys
 sys.path.append('../')
-import datetime
+from datetime import datetime
 import os
 import time
 
@@ -38,6 +38,10 @@ def get_transform(train):
 
 
 def main():
+    checkpoint_root = os.path.join('..','checkpoints',datetime.today().strftime('%Y-%m-%d'))
+    if not os.path.isdir(checkpoint_root):
+        os.mkdir(checkpoint_root)
+
     # Use  CUDA_AVAILABLE_DEVICES=0 to control which device to use
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -85,7 +89,7 @@ def main():
 
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
-        params, lr=0.01/8, momentum=0.9, weight_decay=1e-4)
+        params, lr=0.02/8, momentum=0.9, weight_decay=1e-4)
 
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.lr_gamma)
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 90], gamma=0.1)
@@ -101,13 +105,13 @@ def main():
     print("Start training")
     start_time = time.time()
 
-    evaluate(model, data_loader_test, device=device)
+    #evaluate(model, data_loader_test, device=device)
     utils.save_on_master({
             'model': model_without_ddp.state_dict(),
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(-1)))
+            os.path.join(checkpoint_root, 'model_inputinjection_{}.pth'.format(-1)))
     epochs = 100
     train_print_freq = 10
 
@@ -119,7 +123,7 @@ def main():
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join('..', 'checkpoints', 'model_inputinjection_{}.pth'.format(epoch)))
+            os.path.join(checkpoint_root, 'model_inputinjection_{}.pth'.format(epoch)))
 
         # evaluate after every epoch
         evaluate(model, data_loader_test, device=device)
