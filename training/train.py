@@ -89,7 +89,7 @@ def main():
 
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.SGD(
-        params, lr=0.02/8, momentum=0.9, weight_decay=1e-4)
+        params, lr=0.001/8, momentum=0.9, weight_decay=1e-4)
 
     # lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step_size, gamma=args.lr_gamma)
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[80, 90], gamma=0.1)
@@ -130,8 +130,7 @@ def main():
 
 
     total_time = time.time() - start_time
-    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print('Training time {}'.format(total_time_str))
+    print('Training time {} seconds'.format(total_time))
 
 
 if __name__ == "__main__":

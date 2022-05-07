@@ -53,6 +53,12 @@ class BackboneWithPolarizer(nn.Module):
 		self.polar_backbone_pre = PolarBackbonePre(polar_in_channels)
 		self.polar_backbone_post = PolarBackbonePost(self.out_channels)
 
+	def freeze_img_backbone(self):
+		for param in self.parameters():
+			param.requires_grad = True
+		for param in self.img_backbone.parameters():
+			param.requires_grad = False
+
 	def forward(self, img: Tensor, polar: Tensor) -> Dict[str, Tensor]:
 		imgs = self.img_backbone(img)
 		polar = self.polar_backbone_pre(polar)
@@ -191,6 +197,12 @@ class RPNInjection(GeneralizedRCNN): # see FasterRCNN's source code
 				param = param.data
 			own_state[name].copy_(param)
 
+	def freeze_body(self):
+		for param in self.parameters():
+			param.requires_grad = False
+		for param in self.roi_heads.box_predictor.parameters():
+			param.requires_grad = True
+
 	def check_box_degeneracy(self, targets):
 		if targets is not None:
 			for target_idx, target in enumerate(targets):
@@ -275,7 +287,6 @@ def build_rpn_injection_model(
 	)
 
 	if pretrained:
-		# no need to download the backbone if pretrained is set
 		pretrained_backbone = False
 
 	backbone = resnet50(pretrained=pretrained_backbone, progress=progress, norm_layer=misc_nn_ops.FrozenBatchNorm2d)
@@ -286,6 +297,10 @@ def build_rpn_injection_model(
 		state_dict = load_state_dict_from_url(model_urls["fasterrcnn_resnet50_fpn_coco"], progress=progress)
 		model.load_limited_state_dict(state_dict)
 		overwrite_eps(model, 0.0)
+	for param in model.parameters():
+		param.requires_grad = True
+	if pretrained or pretrained_backbone:
+		model.backbone.freeze_img_backbone()
 	return model
 
 # model = build_rpn_injection_model(pretrained=True)

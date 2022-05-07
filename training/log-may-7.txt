@@ -1,0 +1,22 @@
+using device cuda
+Loading data
+loading annotations into memory...
+Done (t=0.01s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+torch.Size([3, 640, 360])
+torch.Size([24, 128, 72])
+{'boxes': tensor([[149.1568, 263.2701, 264.8194, 533.1498],
+        [ 25.7830, 330.4646,  96.2822, 513.3216],
+        [ 74.2513,  46.2650, 141.4456, 215.9034],
+        [  3.7523, 140.9984,  50.0173, 263.2704],
+        [179.9998,   0.0000, 300.0688, 135.4906]]), 'labels': tensor([1, 1, 1, 1, 1]), 'image_id': tensor([1]), 'area': tensor([31214.9863, 12891.2617, 11398.7441,  5656.9189, 16268.2158]), 'iscrowd': tensor([0, 0, 0, 0, 0])}
+Creating data loaders
+torch.Size([3, 640, 360])
+torch.Size([3, 640, 360])
+Creating model
+Start training
