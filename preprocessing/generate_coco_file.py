@@ -15,6 +15,8 @@ img_root = os.path.join('..','data','images')
 lab_root = os.path.join('..','data','labels')
 vid_root = os.path.join('..','data','videos')
 spec_root = os.path.join('..','data','spectrograms')
+img_height = 128
+img_width = 72
 
 def pool_img(image, new_width, new_height):
     return cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
@@ -31,7 +33,7 @@ for lab_folder in os.listdir(lab_root):
 	print(vid_file)
 	assert(os.path.exists(vid_file))
 	vid = vid_read(vid_file)
-	vid = [pool_img(frame, 9, 16) for frame in vid]
+	vid = [pool_img(frame, img_width, img_height) for frame in vid]
 	vid = np.stack(vid, axis=0)
 	freqs, times, spectr = signal.spectrogram(vid, fs=30.0, window=('hamming'), noverlap=13, nperseg=14, axis=0, mode='magnitude') 
 	# all_frame has shape (T,16,9,3) (T)--how many frames are in the video

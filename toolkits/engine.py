@@ -47,8 +47,6 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq):
                 sys.exit(1)
             losses.backward()
             avg_loss += loss_value
-            print(model.fasterRCNN.backbone.backbone.body.conv1.weight.grad)
-            print(model.polarPrep.conv1.weight.grad)
             #torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
         optimizer.step()
 

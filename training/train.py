@@ -18,7 +18,7 @@ from torch import nn
 
 from toolkits.coco_utils import get_coco
 from toolkits.engine import train_one_epoch, evaluate
-from model_zoo.InputInjection import InputInjection
+from model_zoo.RPNInjection import RPNInjection, build_rpn_injection_model
 from toolkits import utils
 import toolkits.transforms as T
 
@@ -82,7 +82,7 @@ def main():
     print(images[1].shape)
 
     print("Creating model")
-    model = InputInjection()
+    model = build_rpn_injection_model()
     model.to(device)
 
     model_without_ddp = model
@@ -111,7 +111,7 @@ def main():
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join(checkpoint_root, 'model_inputinjection_{}.pth'.format(-1)))
+            os.path.join(checkpoint_root, 'model_rpninjection_{}.pth'.format(-1)))
     epochs = 100
     train_print_freq = 10
 
@@ -123,7 +123,7 @@ def main():
             'optimizer': optimizer.state_dict(),
             'lr_scheduler': lr_scheduler.state_dict(),
             },
-            os.path.join(checkpoint_root, 'model_inputinjection_{}.pth'.format(epoch)))
+            os.path.join(checkpoint_root, 'model_rpninjection_{}.pth'.format(epoch)))
 
         # evaluate after every epoch
         evaluate(model, data_loader_test, device=device)
