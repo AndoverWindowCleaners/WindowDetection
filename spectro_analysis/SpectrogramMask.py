@@ -9,7 +9,7 @@ freq_i = 3
 time_i = 200
 
 base_dir = '../data/videos/'
-video_num = '59'
+video_num = '67'
 video = f'{video_num}.mov'
 
 

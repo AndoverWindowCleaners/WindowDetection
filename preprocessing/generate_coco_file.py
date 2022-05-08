@@ -17,6 +17,7 @@ vid_root = os.path.join('..','data','videos')
 spec_root = os.path.join('..','data','spectrograms')
 img_height = 128
 img_width = 72
+fps = 30.0
 
 def pool_img(image, new_width, new_height):
     return cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
@@ -35,10 +36,11 @@ for lab_folder in os.listdir(lab_root):
 	vid = vid_read(vid_file)
 	vid = [pool_img(frame, img_width, img_height) for frame in vid]
 	vid = np.stack(vid, axis=0)
-	freqs, times, spectr = signal.spectrogram(vid, fs=30.0, window=('hamming'), noverlap=13, nperseg=14, axis=0, mode='magnitude') 
+	freqs, times, spectr = signal.spectrogram(vid, fs=fps, window=('hamming'), noverlap=12, nperseg=14, axis=0, mode='magnitude') 
 	# all_frame has shape (T,16,9,3) (T)--how many frames are in the video
 	# output (N, 16, 9, 3, T') -- applies fourier analysis to each all_shape[start:end,i,j,k] --> (N)
 	# output (N, 16, 9, 3, T')
+	print(spectr.shape)
 	assert(len(spectr) == 8) 
 	spectr = np.transpose(spectr, (4,1,2,3,0)) # (T',16,9,3,8)
 	spectr = np.reshape(spectr, (spectr.shape[0], spectr.shape[1], spectr.shape[2], spectr.shape[3]*spectr.shape[4]))
@@ -48,9 +50,15 @@ for lab_folder in os.listdir(lab_root):
 	vid_len = len(vid)
 	for file in labs_files:
 		i = int(file.split('.')[0])*10
-		perc = i/vid_len
-		speci = round(perc * len(spectr))
-
+		speci = 0
+		timed = 1e9
+		ftime = i/fps
+		for i, t in enumerate(times):
+			if abs(t-ftime)<timed:
+				timed = abs(t-ftime)
+				speci = i
+		# print(times)
+		# print(times[speci], ftime)
 		img_file_path = os.path.join(lab_folder,os.path.splitext(file)[0]+'.jpg')
 		img = cv2.imread(os.path.join(img_root, img_file_path))
 		width = img.shape[1]
@@ -63,6 +71,7 @@ for lab_folder in os.listdir(lab_root):
 			os.mkdir(os.path.join(spec_root, lab_folder))
 		spec_file_path = os.path.join(lab_folder, os.path.splitext(file)[0]+'.npy')
 		np.save(os.path.join(spec_root, spec_file_path), cur_spectr)
+		del cur_spectr
 		anno['spectrograms'].append({'file_name':spec_file_path, 'id':spec_id})
 
 		with open(os.path.join(lab_root,lab_folder,file),'r') as f:
@@ -82,6 +91,7 @@ for lab_folder in os.listdir(lab_root):
 
 		img_id+=1
 		spec_id+=1
+	del spectr
 
 with open(os.path.join(anno_root, 'annotations_27.json'), 'w') as f:
 	json.dump(anno, f)

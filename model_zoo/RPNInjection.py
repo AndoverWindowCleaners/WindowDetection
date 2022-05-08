@@ -26,9 +26,9 @@ model_urls = {
 }
 
 class PolarBackbonePre(nn.Module):
-	def __init__(self, in_channels) -> None:
+	def __init__(self, in_channels, out_channels=96) -> None:
 		super().__init__()
-		self.conv = nn.Conv2d(in_channels, 96, (5, 5), padding='same')
+		self.conv = nn.Conv2d(in_channels, out_channels, (1, 1), padding='same')
 	def forward(self, x) -> Tensor:
 		return self.conv(x)
 
@@ -50,8 +50,8 @@ class BackboneWithPolarizer(nn.Module):
 		super().__init__()
 		self.out_channels = img_backbone.out_channels
 		self.img_backbone = img_backbone
-		self.polar_backbone_pre = PolarBackbonePre(polar_in_channels)
-		self.polar_backbone_post = PolarBackbonePost(self.out_channels)
+		self.polar_backbone_pre = PolarBackbonePre(polar_in_channels, self.out_channels)
+		#self.polar_backbone_post = PolarBackbonePost(self.out_channels)
 
 	def freeze_img_backbone(self):
 		for param in self.parameters():
@@ -63,7 +63,7 @@ class BackboneWithPolarizer(nn.Module):
 		imgs = self.img_backbone(img)
 		polar = self.polar_backbone_pre(polar)
 		polars = {key : F.interpolate(polar, (val.shape[-2], val.shape[-1]), mode='bilinear') for key,val in imgs.items()}
-		polars = self.polar_backbone_post(polars)
+		#polars = self.polar_backbone_post(polars)
 		features = {key : imgs[key]+polars[key] for key in imgs.keys()}
 		return features
 
